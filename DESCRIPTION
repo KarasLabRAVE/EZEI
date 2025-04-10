@@ -35,7 +35,9 @@ Imports:
     doParallel,
     parallel,
     signal,
-    calibrate
+    calibrate,
+    ParallelLogger,
+    fields
 Suggests: 
     knitr,
     rmarkdown,

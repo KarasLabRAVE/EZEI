@@ -1,100 +1,62 @@
 
 #' Visualization of ictal iEEG
 #'
-#' @param ieegts Matrix or Fragility object. Either a matrix of iEEG time
-#' series x(t), with time points as rows and electrodes names as columns,
-#' or a Fragility object from \code{calcAdjFrag}
-#' @param title String. Figure title
-#' @param display Integer or string. Vector electrodes to display
-#' @return plot raw signal
+#' @return A ggplot object
 #'
 #' @examples
-#'data("pt01Epoch")
-#'sozIndex <- attr(pt01Epoch,"sozIndex")
-#'display <- c(sozIndex,77:80)
-#'timeRange <- c(-10,10)
-#'iEEGplot<-visuIEEGData(ieegts=pt01Epoch,timeRange=timeRange,display=display)
-#'iEEGplot
+#' data("pt01EcoG")
+#' 
+#' ## Visualize a subject of electrodes
+#' sozIndex <- attr(pt01EcoG, "sozIndex")
+#' display <- c(sozIndex, 77:80)
+#' 
+#' epoch <- Epoch(pt01EcoG)
+#' visuIEEGData(epoch = epoch[display, ])
 #' @export
-visuIEEGData<-function(ieegts, timeRange=NULL, title = "Patient name seizure number", display=NULL){
-
-  titlepng<- title
-  if(is.null(display)){
-    display<-1:ncol(ieegts)
+visuIEEGData <- function(epoch) {
+  if (is(epoch, "matrix")){
+    epoch <- Epoch(epoch)
   }
-
-
-  elecName<-colnames(ieegts)
-  if(typeof(display)=="integer"){
-
-    displayTot<-1:ncol(ieegts)
-    diffDisplayTot<-setdiff(display,displayTot)
-
-    if(length(diffDisplayTot)!=0){
-      listDisplayMissing<-paste(as.character(diffDisplayTot),collapse=" ")
-      message<-paste("Display electrodes indices. Numbers ",listDisplayMissing,"are out of electrode number limit")
-      warning(message)
-      display<-display[!display%in%diffDisplayTot]
-      displayCor<-paste(as.character(display),collapse=" ")
-      message<-paste("Keeping indices.",displayCor)
-      warning(message)
-
-    }
-
-    displayid<-display
-
-  }else{
-
-    diffDisplayTot<-setdiff(display,elecName)
-
-    if(length(diffDisplayTot)!=0){
-      listDisplayMissing<-paste(diffDisplayTot,collapse=" ")
-      message<-paste("Display electrodes names. Names ",listDisplayMissing,"are out of name list")
-      warning(message)
-      display<-display[!display%in%diffDisplayTot]
-      displayCor<-paste(display,collapse=" ")
-      message<-paste("Keeping names.",displayCor)
-      warning(message)
-
-    }
-
-    displayid<-which(elecName%in%display)
+  
+  gaps <- 2
+  
+  elecNames <- epoch$electrodes
+  data <- epoch$data
+  elecNum <- nrow(data)
+  timesNum <- ncol(data)
+  
+  plotData <- standardizeIEEG(data)
+  
+  times <- epoch$times
+  if (is.null(times)) {
+    xlabel <- "Time Index"
+    timeTicks <- seq_len(timesNum)
+  } else {
+    xlabel <- "Time (s)"
+    timeTicks <- times
   }
-
-  scaling <- 10^floor(log10(max(ieegts)))
-  plotData<-ieegts[,displayid]/scaling
-  gaps<-2
-  displayNames<-colnames(ieegts)[displayid]
-  nElec<-length(displayid)
-  nt<-nrow(plotData)
-  if(is.null(timeRange)){
-    xlabel<-"Time Index"
-    stimes<-seq_len(nt)
-  }else{
-    xlabel<-"Time (s)"
-    stimes<-seq(timeRange[1],timeRange[2],length.out=nt)
+  
+  plotData <- apply(plotData, 1, function(x) x - mean(x))
+  plotData <- as.data.frame(plotData)
+  plotData$timeTicks <- timeTicks
+  breakplot <- (seq_len(elecNum) - 1) * gaps
+  
+  elecNamesReversed <- rev(elecNames)
+  
+  ## add gaps between electrodes
+  for (i in seq_along(elecNamesReversed)) {
+    elec <- elecNamesReversed[i]
+    plotData[[elec]] <- plotData[[elec]] + (i-1) * gaps
   }
-
-
-  for(i in 1:ncol(plotData)){
-    plotData[, i] <- (plotData[, i]- mean(plotData[, i]))+
-      (ncol(plotData)-i)*gaps
+  
+  
+  p <- ggplot2::ggplot(data = plotData)
+  for (i in seq_along(elecNamesReversed)) {
+    elec <- elecNamesReversed[i]
+    p <- p + ggplot2::geom_line(ggplot2::aes(x = .data$timeTicks, y = .data[[elec]]))
   }
-  plotData<-data.frame(plotData)
-  breakplot<-(c(1:nElec)-1)*gaps
-
-  p<-ggplot2::ggplot(data=plotData,ggplot2::aes(x=stimes,y=plotData))+
-    ggplot2::ggtitle(titlepng)+
-    ggplot2::labs(x = xlabel, y = "Electrode",size=2)+
-    ggplot2::geom_vline(xintercept =0,
-                        color = "black", linetype = "dashed", size = 1)
-
-  for(i in 1:nElec){
-    p<-p+ggplot2::geom_line(ggplot2::aes_string(y=names(plotData)[i]))
-  }
-  displayNames<-rev(displayNames)
-  p<-p+ggplot2::scale_y_continuous(labels=displayNames,breaks=breakplot)
-
-  return(p)
-
+  
+  p +
+    ggplot2::labs(x = xlabel, y = "Electrode", size = 2) +
+    ggplot2::scale_y_continuous(labels = elecNamesReversed, breaks = breakplot)
 }
