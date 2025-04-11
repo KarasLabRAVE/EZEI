@@ -12,10 +12,10 @@ data[1:timeNum]<-epoch$data[sozIndex[1],1:timeNum]
 # Compute the multitaper spectrogram
 results = multitaperSpectrogramR(data, fs)
 ## Visualize a subject of electrodes
-display <- c(sozIndex, 77:80)
+#display <- c(sozIndex, 77:80)
 stimes = results[[2]]
 epoch <- Epoch(pt01EcoG)
-visuIEEGData(epoch = epoch[display, ])
+visuIEEGData(epoch)
 
 
 # Set spectrogram params
