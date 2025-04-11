@@ -21,5 +21,5 @@
 #' @source Fragility Multi-Center Retrospective Study
 #' (\href{https://openneuro.org/datasets/ds003029/versions/1.0.0}{OpenNeuro})
 #'
-#' @aliases pt01Epoch
-"pt01Epoch"
+#' @aliases pt01EcoG
+"pt01EcoG"

@@ -41,9 +41,22 @@
 #' @export
 #'
 #' @examples
-multitaperSpectrogramR <- function(data, fs, frequencyRange=NULL, timeBandwidth=5, numTapers=NULL, windowParams=c(5,1),
-                                     minNfft=0, weighting='unity', detrendOpt='linear', parallel=FALSE, numWorkers=FALSE,
-                                     plotOn=TRUE, verbose=TRUE, xyflip=FALSE){
+#'data("pt01EcoG")
+#'
+#'timeWindow <- c(-10, 20)
+#'epoch <- Epoch(pt01EcoG)
+#' fs=1000
+#' timeNum <- ncol(epoch)
+#'windowParams = c(1, 0.2) 
+#' nwt=floor((timeNum/fs-windowParams[1])/windowParams[2])+1
+#' data   <- vector(mode="numeric", length=timeNum)
+#' data[1:timeNum]<-dataMat[sozIndex[1],1:timeNum]
+#' # Compute the multitaper spectrogram
+#' results = multitaperSpectrogramR(data, fs, frequencyRange, timeBandwidth, numTapers, windowParams, minNfft, weighting, detrendOpt, parallel, numWorkers,
+#'                                  plotOn, verbose, xyflip)
+multitaperSpectrogramR <- function(data, fs, frequencyRange=c(0.5,250), timeBandwidth=3, numTapers=5, windowParams=c(1,0.2),
+                                     minNfft=0, weighting='unity', detrendOpt='off', parallel=FALSE, numWorkers=3,
+                                     plotOn=FALSE, verbose=FALSE, xyflip=FALSE){
  # returns:
   
   # Process user input

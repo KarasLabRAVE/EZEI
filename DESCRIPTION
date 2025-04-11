@@ -8,8 +8,14 @@ Authors@R:
     given = "Anne-Cecile", 
     family = "Lesage",
     email = "aclesage@gmail.com", 
+    role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0002-9528-4899")),
+    person(
+    given = "Jiefei", 
+    family = "Wang",
+    email = "szwjf08@gmail.com", 
     role = "aut",
-    comment = c(ORCID = "0000-0002-9528-4899"))
+    comment = c(ORCID = "0000-0002-2709-5332"))
     )
 Maintainer: The package maintainer <aclesage@gmail.com>
 Description: Compute signal energy ratio between high (beta, gamma) and low (theta, alpha) frequency bands and the Epileptogenic Index for ictal iEEG time series
