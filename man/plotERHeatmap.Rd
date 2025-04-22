@@ -2,20 +2,20 @@
 % Please edit documentation in R/visualization.R
 \name{plotERHeatmap}
 \alias{plotERHeatmap}
-\title{Visualization functions ( ER matrix)}
+\title{Visualization function ( energy ratio matrix)}
 \usage{
-plotERHeatmap(ER, sozIndex = NULL)
+plotERHeatmap(ei, sozIndex = NULL)
 }
 \arguments{
 \item{sozIndex}{Integer or string. A group of electrodes to mark as in the Seizure Onset Zone (SOZ)}
 
-\item{ermaster}{ermaster object from}
+\item{EI}{EpileptogenicIndex object from \code{computeEpileptogenicIndex}}
 }
 \value{
 A ggplot object
 }
 \description{
-\code{plotERHeatmap}: plot epileptogenic ratio heatmaps with electrodes marked as soz colored
+\code{plotERHeatmap}: plot energy ratio heatmap with electrodes marked as soz colored
 }
 \examples{
 
@@ -23,11 +23,10 @@ data("pt01EcoG")
 
 ## sozIndex is the index of the electrodes we assume are in the SOZ
 sozIndex <- attr(pt01EcoG, "sozIndex")
+## precomputed Epileptogenic Index object
+data("pt01EI")
 
-## precomputed fragility object
-data("pt01Frag")
-
-## plot the fragility heatmap
-plotFragHeatmap(frag = pt01Frag, sozIndex = sozIndex)
-
+## plot the mean power heatmap
+plotER<-plotERHeatmap(ei=pt01EI,sozIndex=sozIndex)
+plotER
 }

@@ -31,6 +31,13 @@ attr(pt01EcoG, "sozIndex") <- sozIndex
 attr(pt01EcoG, "sozNames") <- sozNames
 usethis::use_data(pt01EcoG, overwrite = TRUE)
 
+epoch <- Epoch(pt01EcoG)
+windowParams = c(1, 0.2) 
+
+pt01EI<-computeEpileptogenicIndex(epoch, windowParams)
+
+
+usethis::use_data(pt01EI, overwrite = TRUE)
 
 
 

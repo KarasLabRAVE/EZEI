@@ -34,11 +34,11 @@ makeHeatMap <- function(df, xTicksNum = 10){
     ggplot2::theme_minimal()
 }
 
-#' Visualization functions ( ER matrix)
+#' Visualization function ( energy ratio matrix)
 #'
-#' @description `plotERHeatmap`: plot epileptogenic ratio heatmaps with electrodes marked as soz colored
+#' @description `plotERHeatmap`: plot energy ratio heatmap with electrodes marked as soz colored
 #'
-#' @param ermaster ermaster object from 
+#' @param EI EpileptogenicIndex object from \code{computeEpileptogenicIndex}
 #' @param sozIndex Integer or string. A group of electrodes to mark as in the Seizure Onset Zone (SOZ)
 #' 
 #' @return A ggplot object
@@ -49,25 +49,24 @@ makeHeatMap <- function(df, xTicksNum = 10){
 #' 
 #' ## sozIndex is the index of the electrodes we assume are in the SOZ
 #' sozIndex <- attr(pt01EcoG, "sozIndex")
+#' ## precomputed Epileptogenic Index object
+#' data("pt01EI")
 #' 
-#' ## precomputed fragility object
-#' data("pt01Frag")
-#' 
-#' ## plot the fragility heatmap
-#' plotFragHeatmap(frag = pt01Frag, sozIndex = sozIndex)
-#' 
+#' ## plot the mean power heatmap
+#' plotER<-plotERHeatmap(ei=pt01EI,sozIndex=sozIndex)
+#' plotER
 #' @rdname plotERHeatmap
 #' @export
 plotERHeatmap <- function(
-    ER,
+    ei,
     sozIndex = NULL) {
   ## TODO: make sozID an optional
   ## TODO: add plot support to ER
-  ERMat <- ER
+  ERMat <- ei$energyRatio
   elecNum <- nrow(ERMat)
   windowNum <- ncol(ERMat)
   
-  elecNames <- rownames(ERMat)
+  elecNames <- ei$electrodes
   sozIndex <- checkIndex(sozIndex, elecNames)
   
   group1 <- sozIndex
@@ -76,7 +75,7 @@ plotERHeatmap <- function(
   elecColor <- rep("blue", elecNum)
   elecColor[seq_along(group2)] <- "black"
   
-  startTime <- colnames(ERMat)
+  startTime <- ei$startTimes
   if (is.null(startTime)) {
     xlabel <- "Time Index"
     stimes <- seq_len(windowNum)
@@ -85,12 +84,12 @@ plotERHeatmap <- function(
     stimes <- startTime
   }
   
+  rownames(ERMat) <- ei$electrodes
   colnames(ERMat) <- stimes
   
   ## prepare the data.frame for visualization
   allIndex <- c(group1, group2)
   df <- as.data.frame(ERMat[allIndex, ])
-  
   
   
   makeHeatMap(df) +
@@ -99,7 +98,6 @@ plotERHeatmap <- function(
       axis.text.y = ggtext::element_markdown(size = 6, colour = elecColor), # Adjust depending on electrodes
     )
 }
-
 
 
 #' Visualization of ictal iEEG
