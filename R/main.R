@@ -109,8 +109,9 @@ computeEpileptogenicIndex <- function(epoch,  windowParams, fs=1000){
   
   hspan=which.min(abs(stimes-H))
   
-  Nd[is.na(Nd)]=nwt-hspan
-  Nd[Nd>nwt-hspan]=nwt-hspan
+  maxNd<-nwt-hspan
+  Nd[is.na(Nd)]=maxNd
+  Nd[Nd>nwt-hspan]=maxNd
   
   EI<- vector(mode="numeric", length=elecNum)
   N0=min(Nd)
@@ -122,11 +123,16 @@ computeEpileptogenicIndex <- function(epoch,  windowParams, fs=1000){
   
   maxei=max(EI)
   EI=EI/maxei
+  
+  idNoDetect<-which(Nd==maxNd)
+  td<-stimes[Nd]+epoch$times[1]
+  td[idNoDetect]<-epoch$times[timeNum]
 
   
   EpileptogenicIndex(
     energyRatio= ermaster,
     epileptogenicIndex=EI,
+    timeDetect<-td,
     startTimes = timesOnset,
     electrodes = epoch$electrodes
   )

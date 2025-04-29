@@ -14,7 +14,7 @@ EIPt01<-computeEpileptogenicIndex(epoch, windowParams)
 ermaster<-EIPt01$energyRatio
   
 
-plotER<-plotERHeatmap(ermaster,sozIndex=sozIndex)
+plotER<-plotERHeatmap(ei=EIPt01,sozIndex=sozIndex)
 plotER
 
 #################

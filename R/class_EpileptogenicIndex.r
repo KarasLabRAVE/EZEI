@@ -3,17 +3,19 @@
     slots = list(
         energyRatio= "matrix",
         epileptogenicIndex="numeric",
+        timeDetect="numeric",
         startTimes = "numeric",
         electrodes = "character"
     )
 )
 
 
-EpileptogenicIndex<- function(energyRatio, epileptogenicIndex, startTimes, electrodes) {
+EpileptogenicIndex<- function(energyRatio, epileptogenicIndex, timeDetect, startTimes, electrodes) {
 
   .EpileptogenicIndex(
     energyRatio = energyRatio,
     epileptogenicIndex=epileptogenicIndex,
+    timeDetect=timeDetect,
     startTimes = startTimes,
     electrodes = electrodes
   )
@@ -27,7 +29,7 @@ EpileptogenicIndex<- function(energyRatio, epileptogenicIndex, startTimes, elect
 #' @export
 setMethod("show", "EpileptogenicIndex", function(object) {
   cat("\nEpileptogenicIndex object\n")
-    slots <- c("energyRatio","epileptogenicIndex","startTimes","electrodes")
+    slots <- c("energyRatio","epileptogenicIndex","timeDetect","startTimes","electrodes")
   printSlots(object, slots = slots)
   cat("Use '$attr' to access the data\n")
   invisible(object)
@@ -71,11 +73,13 @@ setMethod("[", "EpileptogenicIndex", function(x, i, j, ..., drop = FALSE) {
   
   energyRatio_subset <- x@energyRatio[i, j, drop = FALSE]
   epileptogenicIndex_subset<-x@epileptogenicIndex[i]
+  timeDetect_subset<-x@timeDetect[i]
   startTimes_subset <- x@startTimes[j]
   electrodes_subset <- x@electrodes[i]
   .EpileptogenicIndex(
     energyRatio = energyRatio_subset,
     epileptogenicIndex=epileptogenicIndex_subset,
+    timeDetect = timeDetect_subset,
     startTimes = startTimes_subset,
     electrodes = electrodes_subset,
   )
