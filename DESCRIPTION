@@ -15,7 +15,13 @@ Authors@R:
     family = "Wang",
     email = "szwjf08@gmail.com", 
     role = "aut",
-    comment = c(ORCID = "0000-0002-2709-5332"))
+    comment = c(ORCID = "0000-0002-2709-5332")),
+    person(
+    given = "Sean", 
+    family = "O'Leary",  
+    email = "smoleary@utmb.edu", 
+    role = "aut",
+    comment = c(ORCID = "0000-0003-3650-705X"))
     )
 Maintainer: The package maintainer <aclesage@gmail.com>
 Description: Compute signal energy ratio between high (beta, gamma) and low (theta, alpha) frequency bands and the Epileptogenic Index for ictal iEEG time series
@@ -24,7 +30,8 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Depends: 
-    R (>= 3.5)
+    R (>= 4.1.0),
+    Epoch
 LazyData: true
 Imports: 
     stats,
@@ -43,7 +50,11 @@ Imports:
     signal,
     calibrate,
     ParallelLogger,
-    fields
+    fields,
+    foreach,
+    progress,
+    ramify,
+    reshape2
 Suggests: 
     knitr,
     rmarkdown,
