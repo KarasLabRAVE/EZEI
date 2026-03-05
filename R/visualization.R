@@ -72,8 +72,9 @@ plotERHeatmap <- function(
   group1 <- sozIndex
   group2 <- setdiff(seq_len(elecNum), sozIndex)
 
-  elecColor <- rep("blue", elecNum)
-  elecColor[seq_along(group2)] <- "black"
+  elecColor <- rep("red", elecNum)
+  elecColor[group2] <- "black"
+  elecColorr<-rev(elecColor)
 
   startTime <- round(ei$startTimes,1)
   if (is.null(startTime)) {
@@ -88,14 +89,16 @@ plotERHeatmap <- function(
   colnames(ERMat) <- stimes
 
   ## prepare the data.frame for visualization
-  allIndex <- c(group1, group2)
-  df <- as.data.frame(ERMat[allIndex, ])
+  #allIndex <- c(group1, group2)
+  #df <- as.data.frame(ERMat[allIndex, ])
+  df <- as.data.frame(ERMat[, ])
+
 
 
   makeHeatMap(df) +
     ggplot2::labs(x = xlabel, y = "Electrode", size = 2) +
     ggplot2::theme(
-      axis.text.y = ggtext::element_markdown(size = 6, colour = elecColor), # Adjust depending on electrodes
+      axis.text.y = ggtext::element_markdown(size = 10, colour = elecColorr), # Adjust depending on electrodes
     )
 }
 
